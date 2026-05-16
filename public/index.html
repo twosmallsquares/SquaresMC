@@ -1,658 +1,843 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SquaresMC</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>SquaresMC</title>
 
-  <!-- Icons (optional but nice) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <style>
-    :root{
-      --bg0:#070710;
-      --bg1:#0b0b16;
-      --card: rgba(18, 18, 34, .82);
-      --card2: rgba(24, 24, 46, .72);
-      --stroke: rgba(157, 78, 221, .25);
-      --primary:#9d4edd;
-      --primary2:#7b2cbf;
-      --gold:#ffd400;
-      --text:#eaeaff;
-      --muted:rgba(234,234,255,.75);
-      --r: 18px;
-      --shadow: 0 16px 44px rgba(0,0,0,.55);
-      --shadow2: 0 10px 30px rgba(0,0,0,.35);
-      --ease: cubic-bezier(.16,.84,.22,1);
-    }
-    *{ box-sizing:border-box; margin:0; padding:0; }
-    html,body{ height:100%; }
-    body{
-      font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(1000px 700px at 10% 10%, rgba(157,78,221,.18), transparent 55%),
-        radial-gradient(900px 650px at 90% 85%, rgba(123,44,191,.16), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
-    a{ color: inherit; }
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-    .topbar{
-      position: sticky; top:0; z-index:50;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(180deg, rgba(7,7,16,.90), rgba(7,7,16,.62));
-      border-bottom: 1px solid rgba(157,78,221,.20);
-    }
-    .topbar-inner{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 14px 18px;
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      min-width: 220px;
-    }
-    .badge{
-      width:44px; height:44px; border-radius: 14px;
-      display:grid; place-items:center;
-      background:
-        radial-gradient(14px 14px at 30% 30%, rgba(255,255,255,.35), transparent 60%),
-        linear-gradient(135deg, var(--primary), var(--primary2));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 10px 26px rgba(157,78,221,.30);
-    }
-    .badge i{ filter: drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
-    .brand .name{ font-weight: 900; letter-spacing: .6px; font-size: 1.15rem; }
-    .brand .sub{ color: var(--muted); margin-top:2px; font-size:.95rem; }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    .social{ display:flex; gap:10px; align-items:center; }
-    .iconbtn{
-      width: 42px; height: 42px; border-radius: 999px;
-      display:grid; place-items:center;
-      background: rgba(157,78,221,.10);
-      border: 1px solid rgba(157,78,221,.22);
-      text-decoration:none;
-      box-shadow: 0 8px 18px rgba(0,0,0,.25);
-      transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
-    }
-    .iconbtn:hover{ transform: translateY(-2px); background: rgba(157,78,221,.22); border-color: rgba(157,78,221,.40); }
-    .iconbtn:focus-visible{ outline: 3px solid rgba(255,212,0,.55); outline-offset: 2px; }
+<style>
 
-    .wrap{ max-width:1100px; margin:0 auto; padding: 28px 18px 80px; }
+:root{
+  --bg:#060b12;
+  --bg2:#0f1724;
 
-    .hero{
-      border-radius: 22px;
-      background: linear-gradient(135deg, rgba(157,78,221,.18), rgba(123,44,191,.08)) , var(--card);
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      padding: 30px 22px;
-      overflow:hidden;
-    }
-    .hero-grid{
-      display:grid;
-      grid-template-columns: 1.35fr .9fr;
-      gap: 18px;
-      align-items:center;
-    }
-    .kicker{
-      display:inline-flex; align-items:center; gap:10px;
-      padding: 8px 12px; border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: var(--muted);
-      font-weight: 700;
-      letter-spacing: .3px;
-      width: fit-content;
-    }
-    .kicker i{ color: rgba(255,212,0,.95); }
-    h1{
-      margin: 12px 0 10px;
-      font-size: clamp(2rem, 4vw, 3.1rem);
-      line-height: 1.05;
-      letter-spacing: .6px;
-      font-weight: 900;
-      background: linear-gradient(90deg, #f2e9ff, #c77dff, #9d4edd);
-      -webkit-background-clip:text; background-clip:text; color: transparent;
-      text-shadow: 0 0 22px rgba(157,78,221,.18);
-    }
-    .hero p{ color: var(--muted); font-size: 1.05rem; max-width: 70ch; }
+  --card:rgba(15,20,30,.88);
 
-    .actions{
-      margin-top: 16px;
-      display:flex; flex-wrap:wrap; gap: 10px;
-    }
-    .btn{
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-weight: 900;
-      letter-spacing: .2px;
-      border: 1px solid rgba(157,78,221,.26);
-      background: rgba(157,78,221,.10);
-      color: var(--text);
-      cursor:pointer;
-      display:inline-flex; align-items:center; gap:10px;
-      transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
-    }
-    .btn:hover{ transform: translateY(-2px); background: rgba(157,78,221,.18); border-color: rgba(157,78,221,.38); }
-    .btn.secondary{
-      border-color: rgba(255,255,255,.15);
-      background: rgba(255,255,255,.06);
-    }
-    .btn.secondary:hover{ background: rgba(255,255,255,.10); }
-    .btn:focus-visible{ outline: 3px solid rgba(255,212,0,.55); outline-offset: 2px; }
+  --blue:#58c7ff;
+  --blue2:#1ea7ff;
+  --blue3:#c7efff;
 
-    .quick{
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border: 1px solid rgba(255,255,255,.14);
-      padding: 16px;
-      box-shadow: var(--shadow2);
-    }
-    .row{
-      display:flex; justify-content:space-between; align-items:center; gap: 12px;
-      padding: 12px 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.22);
-      border: 1px solid rgba(157,78,221,.15);
-      margin-top: 10px;
-    }
-    .row:first-child{ margin-top: 0; }
-    .label{ color: rgba(234,234,255,.72); font-weight: 800; display:flex; align-items:center; gap:8px; }
-    .label i{ color: var(--primary); }
-    .value{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-weight: 900;
-      display:flex; align-items:center; gap: 10px;
-      max-width: 62%;
-    }
-    .addr{ word-break: break-all; font-size: .98rem; }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(157,78,221,.16);
-      border: 1px solid rgba(157,78,221,.30);
-      font-weight: 900;
-      white-space: nowrap;
-      font-family: inherit;
-    }
-    .copy{
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 8px 10px;
-      cursor:pointer;
-      transition: transform .2s var(--ease), background .2s var(--ease);
-      display:inline-flex; align-items:center; gap: 8px;
-      font-weight: 900;
-      font-family: inherit;
-    }
-    .copy:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .copy:focus-visible{ outline: 3px solid rgba(255,212,0,.55); outline-offset: 2px; }
+  --text:#eef9ff;
+  --muted:rgba(238,249,255,.72);
 
-    .section{
-      margin-top: 20px;
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      border-radius: 22px;
-      box-shadow: var(--shadow2);
-      padding: 20px;
-    }
-    .section h2{
-      font-size: 1.35rem;
-      font-weight: 900;
-      letter-spacing: .4px;
-      display:flex; align-items:center; gap: 10px;
-    }
-    .section h2 i{ color: var(--primary); }
-    .desc{ color: var(--muted); margin-top: 6px; }
+  --stroke:rgba(88,199,255,.18);
 
-    .portal-grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 14px;
-      margin-top: 14px;
-    }
-    .portal{
-      position: relative;
-      overflow:hidden;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(120px 80px at 20% 15%, rgba(255,255,255,.15), transparent 60%),
-        linear-gradient(135deg, rgba(157,78,221,.95), rgba(123,44,191,.92));
-      color:white;
-      padding: 18px 16px;
-      cursor:pointer;
-      min-height: 96px;
-      display:flex; gap: 14px; align-items:center;
-      transition: transform .22s var(--ease), box-shadow .22s var(--ease);
-      box-shadow: 0 14px 40px rgba(123,44,191,.24);
-      text-align:left;
-    }
-    .portal:hover{ transform: translateY(-3px); box-shadow: 0 18px 55px rgba(157,78,221,.32); }
-    .portal:focus-visible{ outline: 3px solid rgba(255,212,0,.65); outline-offset: 2px; }
-    .tag{
-      position:absolute; top: 12px; right: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.25);
-      border: 1px solid rgba(255,255,255,.22);
-      font-weight: 900;
-      font-size: .85rem;
-      letter-spacing: .4px;
-    }
-    .picon{
-      width: 46px; height: 46px; border-radius: 16px;
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.20);
-      display:grid; place-items:center;
-      flex: 0 0 auto;
-    }
-    .ptitle{
-      font-weight: 900;
-      letter-spacing: .6px;
-      text-transform: uppercase;
-      font-size: 1.05rem;
-      line-height: 1.1;
-    }
-    .psub{ color: rgba(255,255,255,.85); font-size: .95rem; margin-top: 4px; }
+  --radius:24px;
 
-    footer{
-      margin-top: 24px;
-      padding: 24px 18px;
-      border-top: 1px solid rgba(157,78,221,.22);
-      color: rgba(234,234,255,.78);
-      background: linear-gradient(180deg, rgba(7,7,16,.2), rgba(7,7,16,.7));
-    }
-    .foot{
-      max-width: 1100px;
-      margin: 0 auto;
-      display:flex;
-      flex-wrap:wrap;
-      gap: 14px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .cta{
-      text-decoration:none;
-      color:white;
-      font-weight: 900;
-      letter-spacing:.3px;
-      display:inline-flex;
-      align-items:center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: linear-gradient(90deg, #5865F2, #7289DA);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 14px 35px rgba(88,101,242,.22);
-      transition: transform .2s var(--ease);
-    }
-    .cta:hover{ transform: translateY(-2px); }
+  --shadow:0 18px 55px rgba(0,0,0,.55);
 
-    /* Modal */
-    .modal{
-      position: fixed; inset:0;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.72);
-      z-index: 999;
-      padding: 18px;
-    }
-    .modal[data-open="true"]{ display:grid; }
-    .modal-card{
-      width:min(900px, 100%);
-      border-radius: 22px;
-      border: 1px solid rgba(157,78,221,.35);
-      background: linear-gradient(135deg, rgba(157,78,221,.10), rgba(0,0,0,.15)), rgba(18,18,34,.92);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      position:relative;
-    }
-    .modal-top{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 10px 8px 14px;
-    }
-    .modal-top h3{
-      font-size: 1.25rem;
-      font-weight: 900;
-      display:flex; align-items:center; gap: 10px;
-    }
-    .close{
-      width: 42px; height: 42px; border-radius: 14px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: var(--text);
-      cursor:pointer;
-      display:grid; place-items:center;
-      transition: transform .18s var(--ease), background .18s var(--ease);
-    }
-    .close:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .modal-grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 14px;
-      padding: 8px;
-    }
-    .box{
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(157,78,221,.18);
-      border-radius: 18px;
-      padding: 14px;
-    }
-    .mono{
-      margin-top: 12px;
-      padding: 12px 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.28);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap: 10px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-weight: 900;
-    }
-    .note{ color: var(--muted); text-align:center; padding: 10px 10px 6px; }
+  --ease:cubic-bezier(.16,.84,.22,1);
+}
 
-    /* Toast */
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%) translateY(12px);
-      background: rgba(0,0,0,.78);
-      border: 1px solid rgba(255,255,255,.16);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 999px;
-      box-shadow: 0 16px 40px rgba(0,0,0,.45);
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity .2s var(--ease), transform .2s var(--ease);
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      z-index: 1000;
-      font-weight: 900;
-    }
-    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
-    .dot{ width: 9px; height: 9px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 16px rgba(255,212,0,.35); }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-    @media (max-width: 980px){
-      .hero-grid{ grid-template-columns: 1fr; }
-      .portal-grid{ grid-template-columns: 1fr; }
-      .modal-grid{ grid-template-columns: 1fr; }
-      .value{ max-width: 100%; }
-    }
-    @media (prefers-reduced-motion: reduce){
-      *{ transition:none !important; animation:none !important; }
-    }
-  </style>
+body{
+  font-family:"Outfit",sans-serif;
+
+  color:var(--text);
+
+  background:
+  radial-gradient(circle at top left, rgba(88,199,255,.12), transparent 35%),
+  radial-gradient(circle at bottom right, rgba(30,167,255,.10), transparent 35%),
+  linear-gradient(180deg,var(--bg),var(--bg2));
+
+  min-height:100vh;
+
+  overflow-x:hidden;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+
+  backdrop-filter:blur(12px);
+
+  background:rgba(6,11,18,.82);
+
+  border-bottom:1px solid var(--stroke);
+}
+
+.topbar-inner{
+  max-width:1150px;
+
+  margin:auto;
+
+  padding:16px 22px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  width:54px;
+  height:54px;
+
+  border-radius:18px;
+
+  display:grid;
+  place-items:center;
+
+  background:
+  radial-gradient(circle at 30% 30%, rgba(255,255,255,.3), transparent 40%),
+  linear-gradient(135deg,var(--blue),var(--blue2));
+
+  color:#081018;
+
+  font-size:1.3rem;
+
+  box-shadow:0 12px 32px rgba(88,199,255,.28);
+}
+
+.brand h1{
+  font-size:1.2rem;
+  font-weight:900;
+}
+
+.brand p{
+  color:var(--muted);
+  margin-top:2px;
+  font-size:.9rem;
+}
+
+.socials{
+  display:flex;
+  gap:10px;
+}
+
+.icon-btn{
+  width:44px;
+  height:44px;
+
+  border-radius:999px;
+
+  display:grid;
+  place-items:center;
+
+  background:rgba(88,199,255,.08);
+
+  border:1px solid rgba(88,199,255,.16);
+
+  transition:.22s var(--ease);
+}
+
+.icon-btn:hover{
+  transform:translateY(-2px);
+
+  background:rgba(88,199,255,.14);
+
+  border-color:rgba(88,199,255,.30);
+}
+
+.wrap{
+  max-width:1150px;
+  margin:auto;
+  padding:36px 22px 80px;
+}
+
+.hero{
+  background:
+  linear-gradient(135deg, rgba(88,199,255,.12), rgba(30,167,255,.03)),
+  var(--card);
+
+  border:1px solid var(--stroke);
+
+  border-radius:var(--radius);
+
+  padding:34px;
+
+  box-shadow:var(--shadow);
+
+  overflow:hidden;
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.3fr .9fr;
+  gap:24px;
+  align-items:center;
+}
+
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+
+  padding:10px 15px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  color:var(--muted);
+
+  font-weight:700;
+}
+
+.kicker i{
+  color:var(--blue);
+}
+
+.hero h2{
+  margin-top:18px;
+
+  font-size:clamp(2.5rem,5vw,4.2rem);
+
+  line-height:1;
+
+  font-weight:900;
+
+  background:linear-gradient(90deg,var(--blue3),var(--blue),var(--blue2));
+
+  -webkit-background-clip:text;
+  background-clip:text;
+
+  color:transparent;
+
+  text-shadow:0 0 30px rgba(88,199,255,.15);
+}
+
+.hero p{
+  margin-top:16px;
+
+  color:var(--muted);
+
+  line-height:1.7;
+
+  max-width:700px;
+}
+
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+
+  margin-top:24px;
+}
+
+.btn{
+  border:none;
+
+  border-radius:16px;
+
+  padding:14px 18px;
+
+  cursor:pointer;
+
+  font-family:inherit;
+
+  font-weight:900;
+
+  transition:.22s var(--ease);
+
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+
+  color:#071018;
+
+  box-shadow:0 12px 30px rgba(88,199,255,.25);
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px) scale(1.02);
+}
+
+.btn-secondary{
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  color:var(--text);
+}
+
+.btn-secondary:hover{
+  background:rgba(255,255,255,.10);
+}
+
+.info-card{
+  background:rgba(255,255,255,.03);
+
+  border:1px solid rgba(88,199,255,.12);
+
+  border-radius:20px;
+
+  padding:18px;
+}
+
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:12px;
+
+  padding:14px;
+
+  border-radius:16px;
+
+  background:rgba(0,0,0,.22);
+
+  border:1px solid rgba(88,199,255,.10);
+
+  margin-top:12px;
+}
+
+.info-row:first-child{
+  margin-top:0;
+}
+
+.label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  color:var(--muted);
+
+  font-weight:800;
+}
+
+.label i{
+  color:var(--blue);
+}
+
+.value{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-weight:900;
+}
+
+.copy-btn{
+  border:none;
+
+  background:rgba(88,199,255,.12);
+
+  border:1px solid rgba(88,199,255,.18);
+
+  color:var(--text);
+
+  border-radius:12px;
+
+  padding:8px 12px;
+
+  font-weight:900;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.copy-btn:hover{
+  background:rgba(88,199,255,.18);
+}
+
+.section{
+  margin-top:24px;
+
+  background:var(--card);
+
+  border:1px solid var(--stroke);
+
+  border-radius:var(--radius);
+
+  padding:24px;
+
+  box-shadow:var(--shadow);
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-size:1.4rem;
+
+  font-weight:900;
+}
+
+.section-title i{
+  color:var(--blue);
+}
+
+.desc{
+  color:var(--muted);
+  margin-top:8px;
+}
+
+.portal-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+
+  gap:18px;
+
+  margin-top:20px;
+}
+
+.portal{
+  position:relative;
+
+  border:none;
+
+  cursor:pointer;
+
+  overflow:hidden;
+
+  border-radius:22px;
+
+  padding:24px;
+
+  text-align:left;
+
+  background:
+  radial-gradient(circle at top left, rgba(255,255,255,.18), transparent 35%),
+  linear-gradient(135deg,var(--blue),var(--blue2));
+
+  color:#061018;
+
+  transition:.22s var(--ease);
+
+  box-shadow:0 18px 45px rgba(30,167,255,.25);
+}
+
+.portal:hover{
+  transform:translateY(-4px);
+}
+
+.portal-tag{
+  position:absolute;
+  top:14px;
+  right:14px;
+
+  padding:6px 10px;
+
+  border-radius:999px;
+
+  background:rgba(0,0,0,.14);
+
+  font-size:.85rem;
+
+  font-weight:900;
+}
+
+.portal-icon{
+  width:56px;
+  height:56px;
+
+  border-radius:18px;
+
+  display:grid;
+  place-items:center;
+
+  background:rgba(255,255,255,.18);
+
+  margin-bottom:14px;
+
+  font-size:1.25rem;
+}
+
+.portal h3{
+  font-size:1.2rem;
+  font-weight:900;
+}
+
+.portal p{
+  margin-top:6px;
+  opacity:.8;
+}
+
+footer{
+  margin-top:32px;
+
+  border-top:1px solid var(--stroke);
+
+  padding:28px 22px;
+
+  background:rgba(0,0,0,.25);
+}
+
+.footer-inner{
+  max-width:1150px;
+
+  margin:auto;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:18px;
+}
+
+.footer-text{
+  color:var(--muted);
+}
+
+.discord-btn{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+
+  color:#071018;
+
+  padding:14px 18px;
+
+  border-radius:16px;
+
+  font-weight:900;
+
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+
+  box-shadow:0 12px 30px rgba(88,199,255,.24);
+
+  transition:.22s;
+}
+
+.discord-btn:hover{
+  transform:translateY(-2px);
+}
+
+.toast{
+  position:fixed;
+
+  left:50%;
+  bottom:20px;
+
+  transform:translateX(-50%) translateY(10px);
+
+  background:#0d1624;
+
+  border:1px solid rgba(88,199,255,.16);
+
+  color:var(--text);
+
+  padding:12px 18px;
+
+  border-radius:999px;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.22s;
+
+  box-shadow:var(--shadow);
+
+  z-index:999;
+}
+
+.toast.show{
+  opacity:1;
+
+  transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:950px){
+
+  .hero-grid{
+    grid-template-columns:1fr;
+  }
+
+  .portal-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+</style>
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="badge" aria-hidden="true"><i class="fa-solid fa-cube"></i></div>
-        <div>
-          <div class="name" id="brandName">SquaresMC</div>
-          <div class="sub">Official Website</div>
-        </div>
+
+<header class="topbar">
+
+  <div class="topbar-inner">
+
+    <div class="brand">
+
+      <div class="logo">
+        <i class="fa-solid fa-cube"></i>
       </div>
 
-      <nav class="social" aria-label="Social links">
-        <a class="iconbtn" id="discordLink" href="#" target="_blank" rel="noopener" title="Discord">
-          <i class="fa-brands fa-discord"></i>
-        </a>
-        <a class="iconbtn" id="youtubeLink" href="#" target="_blank" rel="noopener" title="YouTube">
-          <i class="fa-brands fa-youtube"></i>
-        </a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="hero">
-      <div class="hero-grid">
-        <div>
-          <div class="kicker"><i class="fa-solid fa-bolt"></i> Chill • Community • Easy Connect</div>
-          <h1 id="heroTitle">WELCOME TO SQUARESMC</h1>
-          <p id="heroTagline">
-            Survival, SkyBlock, OneBlock, Parkour, Warzones
-          </p>
-
-          <div class="actions">
-            <button class="btn" id="openInstructions"><i class="fa-solid fa-plug"></i> How to Connect</button>
-            <button class="btn secondary" id="copyIPTop"><i class="fa-regular fa-copy"></i> Copy Server Address</button>
-          </div>
-        </div>
-
-        <aside class="quick" aria-label="Server quick info">
-          <div class="row">
-            <div class="label"><i class="fa-solid fa-globe"></i> Server Address</div>
-            <div class="value">
-              <span class="addr" id="serverAddrText">wss://play.squares.wtf</span>
-              <button class="copy" id="copyIP"><i class="fa-regular fa-copy"></i> Copy</button>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="label"><i class="fa-solid fa-code-branch"></i> Client Version</div>
-            <div class="value" style="font-family:inherit;">
-              <span class="pill" id="serverVersionPill">Tuff Client 1.12</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="label"><i class="fa-solid fa-circle-info"></i> Tip</div>
-            <div class="value" style="font-family:inherit; color: rgba(234,234,255,.78);">
-              Keep <strong>wss://</strong> in the address.
-            </div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section" aria-label="Portal access">
-      <h2><i class="fa-solid fa-door-open"></i> Portal Access</h2>
-      <div class="desc">Pick your device — both connect to <span id="serverNameInline">SquaresMC</span>.</div>
-
-      <div class="portal-grid">
-        <button class="portal" id="launchDesktop">
-          <span class="tag" id="desktopVersionTag">v1.12.2</span>
-          <div class="picon"><i class="fa-solid fa-desktop"></i></div>
-          <div>
-            <div class="ptitle">Desktop Portal</div>
-            <div class="psub">Launch <span style="font-family:ui-monospace,monospace;" id="desktopPathText">/WASM/index.html</span></div>
-          </div>
-        </button>
-
-        <button class="portal" id="launchMobile">
-          <span class="tag" id="mobileVersionTag">v1.8.8</span>
-          <div class="picon"><i class="fa-solid fa-mobile-screen-button"></i></div>
-          <div>
-            <div class="ptitle">Mobile Portal</div>
-            <div class="psub">Launch <span style="font-family:ui-monospace,monospace;" id="mobilePathText">/mobile.html</span></div>
-          </div>
-        </button>
-      </div>
-
-      <div class="actions" style="margin-top:12px;">
-        <button class="btn" id="openInstructions2"><i class="fa-solid fa-circle-question"></i> Need help?</button>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="foot">
       <div>
-        <div style="font-weight:900; letter-spacing:.3px;">© <span id="year"></span> <span id="footName">SquaresMC</span></div>
-        <div style="color:rgba(234,234,255,.70); margin-top:6px;">Chill • Community • Fun</div>
+        <h1>SquaresMC</h1>
+        <p>Official Website</p>
       </div>
-      <a class="cta" id="discordFooter" href="#" target="_blank" rel="noopener">
-        <i class="fa-brands fa-discord"></i> Join the Discord
+
+    </div>
+
+    <div class="socials">
+
+      <a class="icon-btn" href="https://discord.com/invite/4tjW5Dz5Fv" target="_blank">
+        <i class="fa-brands fa-discord"></i>
       </a>
+
+      <a class="icon-btn" href="#">
+        <i class="fa-brands fa-youtube"></i>
+      </a>
+
     </div>
-  </footer>
 
-  <!-- Modal -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-top">
-        <h3 id="modalTitle"><i class="fa-solid fa-plug"></i> Connection Guide</h3>
-        <button class="close" id="closeModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <div class="modal-grid">
-        <div class="box">
-          <div style="font-weight:900; display:flex; gap:10px; align-items:center;">
-            <i class="fa-solid fa-list-ol" style="color:var(--primary)"></i> Steps
-          </div>
-          <ol style="padding-left:18px; margin-top:10px; line-height:1.75; color:rgba(234,234,255,.86);">
-            <li>Open the portal (Desktop or Mobile).</li>
-            <li>Enter a username.</li>
-            <li>Go to <strong>Multiplayer</strong> → <strong>Add Server</strong>.</li>
-            <li>Server Address: <strong><span id="modalAddr">wss://play.squares.wtf</span></strong></li>
-            <li>Save → Join.</li>
-          </ol>
-
-          <div class="mono">
-            <span id="modalAddrMono">wss://play.squares.wtf</span>
-            <button class="copy" id="copyIPModal"><i class="fa-regular fa-copy"></i> Copy</button>
-          </div>
-
-          <div class="note">Don’t remove <strong>wss://</strong> — it’s required.</div>
-        </div>
-
-        <div class="box">
-          <div style="font-weight:900; display:flex; gap:10px; align-items:center;">
-            <i class="fa-solid fa-circle-info" style="color:var(--primary)"></i> Quick Info
-          </div>
-          <div style="margin-top:10px; color:rgba(234,234,255,.86); line-height:1.7;">
-            <div>Version: <strong><span id="modalVersion">1.8.8</span></strong></div>
-            <div style="margin-top:6px;">If you get stuck, copy the address again and make sure it starts with <strong>wss://</strong>.</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <span class="dot"></span>
-    <span id="toastText">Copied!</span>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+
+    <div class="hero-grid">
+
+      <div>
+
+        <div class="kicker">
+          <i class="fa-solid fa-bolt"></i>
+          Chill • Community • Easy Connect
+        </div>
+
+        <h2>WELCOME TO SQUARESMC</h2>
+
+        <p>
+          Survival, SkyBlock, OneBlock, Parkour, Warzones and more.
+          Launch the portal and join instantly.
+        </p>
+
+        <div class="actions">
+
+          <button class="btn btn-primary" id="connectBtn">
+            <i class="fa-solid fa-plug"></i>
+            How to Connect
+          </button>
+
+          <button class="btn btn-secondary" id="copyTop">
+            <i class="fa-regular fa-copy"></i>
+            Copy Server Address
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="info-card">
+
+        <div class="info-row">
+
+          <div class="label">
+            <i class="fa-solid fa-globe"></i>
+            Server Address
+          </div>
+
+          <div class="value">
+            <span id="serverIP">wss://play.squares.wtf</span>
+
+            <button class="copy-btn" id="copyBtn">
+              Copy
+            </button>
+          </div>
+
+        </div>
+
+        <div class="info-row">
+
+          <div class="label">
+            <i class="fa-solid fa-code-branch"></i>
+            Version
+          </div>
+
+          <div class="value">
+            1.12.2
+          </div>
+
+        </div>
+
+        <div class="info-row">
+
+          <div class="label">
+            <i class="fa-solid fa-circle-info"></i>
+            Tip
+          </div>
+
+          <div class="value">
+            Keep wss:// in the address
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="section">
+
+    <div class="section-title">
+      <i class="fa-solid fa-door-open"></i>
+      Portal Access
+    </div>
+
+    <div class="desc">
+      Choose your platform and start playing.
+    </div>
+
+    <div class="portal-grid">
+
+      <button class="portal" onclick="launch('/WASM/index.html')">
+
+        <div class="portal-tag">
+          v1.12.2
+        </div>
+
+        <div class="portal-icon">
+          <i class="fa-solid fa-desktop"></i>
+        </div>
+
+        <h3>Desktop Portal</h3>
+
+        <p>Launch WASM Client</p>
+
+      </button>
+
+      <button class="portal" onclick="launch('/mobile.html')">
+
+        <div class="portal-tag">
+          Mobile
+        </div>
+
+        <div class="portal-icon">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+        </div>
+
+        <h3>Mobile Portal</h3>
+
+        <p>Launch Mobile Client</p>
+
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+
+  <div class="footer-inner">
+
+    <div class="footer-text">
+      © 2026 SquaresMC • Chill • Community • Fun
+    </div>
+
+    <a class="discord-btn" href="https://discord.com/invite/4tjW5Dz5Fv" target="_blank">
+
+      <i class="fa-brands fa-discord"></i>
+
+      Join Discord
+
+    </a>
+
   </div>
 
-  <script>
-    /*********************************************************
-     * TEMPLATE SETTINGS (EDIT THESE)
-     *********************************************************/
-    const SERVER = {
-      name: "SquaresMC",
-      tagline: "A chill Minecraft community. Launch the portal, add the server, and hop in.",
-      version: "1.12.2",
-      address: "wss://play.squares.wtf",
-      discord: "https://discord.com/invite/4tjW5Dz5Fv",       // optional
-      youtube: "",                                   // optional (leave "" to hide)
-      desktopPortalPath: "/WASM/index.html",
-      mobilePortalPath: "/mobile.html",
-    };
+</footer>
 
-    const $ = (id) => document.getElementById(id);
-    const setText = (id, v) => { const el = $(id); if (el) el.textContent = v; };
-    const setHref = (id, v) => { const el = $(id); if (el) el.href = v; };
+<div class="toast" id="toast">
+  Copied server address!
+</div>
 
-    // Fill branding
-    setText("brandName", SERVER.name);
-    setText("heroTitle", `WELCOME TO ${SERVER.name.toUpperCase()}`);
-    setText("heroTagline", SERVER.tagline);
-    setText("serverNameInline", SERVER.name);
-    setText("footName", SERVER.name);
+<script>
 
-    // Links
-    setHref("discordLink", SERVER.discord);
-    setHref("discordFooter", SERVER.discord);
+const SERVER_IP = "wss://play.squares.wtf";
 
-    if (SERVER.youtube && SERVER.youtube.trim() !== "") {
-      setHref("youtubeLink", SERVER.youtube);
-    } else {
-      $("youtubeLink").style.display = "none";
-    }
+const toast = document.getElementById("toast");
 
-    // Address + version
-    setText("serverAddrText", SERVER.address);
-    setText("modalAddr", SERVER.address);
-    setText("modalAddrMono", SERVER.address);
-    setText("modalVersion", SERVER.version);
-    setText("desktopVersionTag", "v" + SERVER.version);
-    setText("mobileVersionTag", "v" + SERVER.version);
-    setText("serverVersionPill", SERVER.version);
+function showToast(message){
 
-    setText("desktopPathText", SERVER.desktopPortalPath);
-    setText("mobilePathText", SERVER.mobilePortalPath);
+  toast.textContent = message;
 
-    setText("year", new Date().getFullYear());
+  toast.classList.add("show");
 
-    // Launch portal pages
-    function launch(path){
-      localStorage.setItem("game", "true");
-      window.location.href = path;
-    }
-    $("launchDesktop").addEventListener("click", () => launch(SERVER.desktopPortalPath));
-    $("launchMobile").addEventListener("click", () => launch(SERVER.mobilePortalPath));
+  clearTimeout(window.toastTimer);
 
-    // Modal
-    const modal = $("modal");
-    const openModal = () => { modal.dataset.open = "true"; modal.setAttribute("aria-hidden","false"); };
-    const closeModal = () => { modal.dataset.open = "false"; modal.setAttribute("aria-hidden","true"); };
+  window.toastTimer = setTimeout(() => {
 
-    $("openInstructions").addEventListener("click", openModal);
-    $("openInstructions2").addEventListener("click", openModal);
-    $("closeModal").addEventListener("click", closeModal);
-    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+    toast.classList.remove("show");
 
-    // Toast
-    const toast = $("toast");
-    const toastText = $("toastText");
-    let toastTimer = null;
-    function showToast(msg){
-      toastText.textContent = msg;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 1400);
-    }
+  },1500);
 
-    // Copy helpers
-    async function copyText(text){
-      try{
-        await navigator.clipboard.writeText(text);
-        showToast("Copied: " + text);
-      }catch{
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        showToast("Copied: " + text);
-      }
-    }
+}
 
-    $("copyIP").addEventListener("click", () => copyText(SERVER.address));
-    $("copyIPModal").addEventListener("click", () => copyText(SERVER.address));
-    $("copyIPTop").addEventListener("click", () => copyText(SERVER.address));
-  </script>
+async function copyIP(){
+
+  try{
+
+    await navigator.clipboard.writeText(SERVER_IP);
+
+    showToast("Copied: " + SERVER_IP);
+
+  }catch{
+
+    showToast("Copy failed");
+
+  }
+
+}
+
+function launch(path){
+
+  localStorage.setItem("game","true");
+
+  window.location.href = path;
+
+}
+
+document.getElementById("copyBtn").addEventListener("click",copyIP);
+
+document.getElementById("copyTop").addEventListener("click",copyIP);
+
+document.getElementById("connectBtn").addEventListener("click",() => {
+
+  alert(
+`1. Launch a portal
+2. Enter username
+3. Multiplayer > Add Server
+4. Paste:
+${SERVER_IP}
+5. Join`
+  );
+
+});
+
+</script>
+
 </body>
 </html>
